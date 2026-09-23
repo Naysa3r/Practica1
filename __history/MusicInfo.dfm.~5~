@@ -4,7 +4,7 @@ object Form1: TForm1
   Caption = 'MusicInfo'
   ClientHeight = 379
   ClientWidth = 501
-  Color = clWhitesmoke
+  Color = clSnow
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -12

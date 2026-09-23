@@ -4,22 +4,21 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Menus;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Menus, Vcl.StdCtrls;
 
 type
   TForm1 = class(TForm)
-    MainMenu1: TMainMenu;
-    N1: TMenuItem;
-    N2: TMenuItem;
-    N4: TMenuItem;
-    N5: TMenuItem;
-    N6: TMenuItem;
-    N7: TMenuItem;
-    N3: TMenuItem;
-    N8: TMenuItem;
-    Playlist1: TMenuItem;
-    N9: TMenuItem;
-    N10: TMenuItem;
+    Label1: TLabel;
+    Button1: TButton;
+    Button2: TButton;
+    Button3: TButton;
+    Button4: TButton;
+    Button5: TButton;
+    Button6: TButton;
+    Button7: TButton;
+    Button8: TButton;
+    Button9: TButton;
+    Button10: TButton;
   private
     { Private declarations }
   public
