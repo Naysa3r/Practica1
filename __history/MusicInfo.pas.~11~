@@ -39,6 +39,11 @@ implementation
 uses
   DataUnits;
   // Переменные хранения начала каждого списка
+var
+  HeadArtists: PArtist = nil;
+  HeadAlbums: PAlbum = nil;
+  HeadSongs: PSong = nil;
+
 
 procedure TForm1.Button1Click(Sender: TObject);
 begin

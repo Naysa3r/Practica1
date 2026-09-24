@@ -63,11 +63,11 @@ type
   FAlbums  = file of TAlbumFileRecord;
   FSongs   = file of TSongFileRecord;
 
-  var
-    // Глобальные указатели на начала списков
-    HeadArtists: PArtist = nil;
-    HeadAlbums: PAlbum = nil;
-    HeadSongs: PSong = nil;
+var
+  // Глобальные указатели на начала списков
+  HeadArtists: PArtist = nil;
+  HeadAlbums: PAlbum = nil;
+  HeadSongs: PSong = nil;
 
   procedure GenerateTestDataFiles;
 
@@ -119,38 +119,6 @@ implementation
     RecSong.Title := 'Blinding Lights';    RecSong.AlbumCode := 30; RecSong.Duration := 200; Write(FileS, RecSong);
 
     CloseFile(FileS);
-  end;
-
-  // Процедура очистки памяти
-  procedure ClearAllLists;
-  var
-    CurrArtist, NextArtist: PArtist;
-    CurrAlbum, NextAlbum: PAlbum;
-    CurrSong, NextSong: PSong;
-  begin
-    CurrArtist := HeadArtists;
-    while CurrArtist <> nil do begin
-      NextArtist := CurrArtist^.Next;
-      Dispose(CurrArtist);
-      CurrArtist := NextArtist;
-    end;
-    HeadArtists := nil;
-
-    CurrAlbum := HeadAlbums;
-    while CurrAlbum <> nil do begin
-      NextAlbum := CurrAlbum^.Next;
-      Dispose(CurrAlbum);
-      CurrAlbum := NextAlbum;
-    end;
-    HeadAlbums := nil;
-
-    CurrSong := HeadSongs;
-    while CurrSong <> nil do begin
-      NextSong := CurrSong^.Next;
-      Dispose(CurrSong);
-      CurrSong := NextSong;
-    end;
-    HeadSongs := nil;
   end;
 
 end.

@@ -4,7 +4,7 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Menus, Vcl.StdCtrls, Vcl.ExtCtrls;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Menus, Vcl.StdCtrls;
 
 type
 
@@ -20,8 +20,6 @@ type
     Button8: TButton;
     Button9: TButton;
     Button10: TButton;
-    shpStatus: TShape;
-    lblStatus: TLabel;
     procedure Button1Click(Sender: TObject);
   private
     { Private declarations }
@@ -39,12 +37,18 @@ implementation
 uses
   DataUnits;
   // Переменные хранения начала каждого списка
+var
+  HeadArtists: PArtist = nil;
+  HeadAlbums: PAlbum = nil;
+  HeadSongs: PSong = nil;
+
 
 procedure TForm1.Button1Click(Sender: TObject);
 begin
-  // Временная генерация файлов данных
-  // GenerateTestDataFiles;
-  // ShowMessage('Файлы .dat успешно созданы в папке с программой!');
+  // ВРЕМЕННО: генерируем файлы при первом клике на кнопку
+  GenerateTestDataFiles;
+
+  ShowMessage('Файлы .dat успешно созданы в папке с программой!');
 end;
 
 end.
