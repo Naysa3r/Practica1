@@ -203,6 +203,7 @@ object Form1: TForm1
     end
     object miSongs: TMenuItem
       Caption = #1055#1077#1089#1085#1080
+      OnClick = miSongsClick
     end
   end
 end

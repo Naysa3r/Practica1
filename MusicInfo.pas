@@ -30,6 +30,7 @@ type
     procedure BtnViewClick(Sender: TObject);
     procedure miArtistsClick(Sender: TObject);
     procedure miAlbumsClick(Sender: TObject);
+    procedure miSongsClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -226,6 +227,49 @@ begin
   end;
 
   // Отображение формы поверх главного меню
+  fView.ShowModal;
+end;
+
+procedure TForm1.miSongsClick(Sender: TObject);
+var
+  Curr: PSong;
+  ListItem: TListItem;
+  Min, Sec: Integer;
+begin
+  // Проверка на загрузку данных
+  if HeadSongs = nil then
+  begin
+    ShowMessage('В оперативной памяти нет данных! Сначала выполните загрузку.');
+    Exit;
+  end;
+
+  // Настройка формы просмотра под Песни
+  fView.Caption := 'Просмотр списка: Песни в альбомах';
+  fView.lvOutput.Items.Clear;
+  fView.lvOutput.Columns.Clear;
+
+  // Создание колонок для песен
+  with fView.lvOutput.Columns.Add do begin Caption := 'Название песни'; Width := 220; end;
+  with fView.lvOutput.Columns.Add do begin Caption := 'Код альбома'; Width := 90; end;
+  with fView.lvOutput.Columns.Add do begin Caption := 'Длительность'; Width := 100; end;
+
+  // Проход по динамическому списку песен в ОЗУ
+  Curr := HeadSongs;
+  while Curr <> nil do
+  begin
+    ListItem := fView.lvOutput.Items.Add;
+    ListItem.Caption := Curr^.Title;               // 1 колонка
+    ListItem.SubItems.Add(IntToStr(Curr^.AlbumCode)); // 2 колонка
+
+    // Перевод секунд в ММ:СС
+    Min := Curr^.Duration div 60;
+    Sec := Curr^.Duration mod 60;
+    ListItem.SubItems.Add(Format('%.2d:%.2d (%d сек)', [Min, Sec, Curr^.Duration])); // 3 колонка
+
+    Curr := Curr^.Next; // Переход к следующему элементу
+  end;
+
+  // Открытие окна просмотра
   fView.ShowModal;
 end;
 
