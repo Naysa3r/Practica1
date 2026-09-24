@@ -4,14 +4,14 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Menus, Vcl.StdCtrls, Vcl.ExtCtrls;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Menus, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.ComCtrls;
 
 type
 
   TForm1 = class(TForm)
     Label1: TLabel;
     BtnLoad: TButton;
-    Button2: TButton;
+    BtnView: TButton;
     Button3: TButton;
     Button4: TButton;
     Button5: TButton;
@@ -22,7 +22,13 @@ type
     Button10: TButton;
     shpStatus: TShape;
     lblStatus: TLabel;
+    pmLists: TPopupMenu;
+    miArtists: TMenuItem;
+    miAlbums: TMenuItem;
+    miSongs: TMenuItem;
     procedure BtnLoadClick(Sender: TObject);
+    procedure BtnViewClick(Sender: TObject);
+    procedure miArtistsClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -37,7 +43,7 @@ implementation
 {$R *.dfm}
 
 uses
-  DataUnits;
+  DataUnits, ViewForm;
   // Переменные хранения начала каждого списка
 
 procedure TForm1.BtnLoadClick(Sender: TObject);
@@ -125,12 +131,59 @@ begin
   except
     on E: Exception do
     begin
-      // В случае ошибки сбрасываем всё в исходное состояние
+      // В случае ошибки сброс
       ClearAllLists;
       shpStatus.Brush.Color := clRed;
       lblStatus.Caption := 'Ошибка загрузки: ' + E.Message;
     end;
   end;
+end;
+
+procedure TForm1.BtnViewClick(Sender: TObject);
+var
+  ButtonPt: TPoint;
+begin
+  ButtonPt := BtnView.ClientToScreen(Point(0, BtnView.Height));
+  pmLists.Popup(ButtonPt.X, ButtonPt.Y);
+end;
+
+procedure TForm1.miArtistsClick(Sender: TObject);
+var
+  Curr: PArtist;
+  ListItem: TListItem;
+begin
+  if HeadArtists = nil then
+  begin
+    ShowMessage('В оперативной памяти нет данных! Сначала выполните загрузку.');
+    Exit;
+  end;
+
+  // Внешний вид формы просмотра
+  fView.Caption := 'Просмотр списка: Музыкальные исполнители';
+  fView.lvOutput.Items.Clear;
+  fView.lvOutput.Columns.Clear;
+
+  // Колонки
+  with fView.lvOutput.Columns.Add do begin Caption := 'Код'; Width := 60; end;
+  with fView.lvOutput.Columns.Add do begin Caption := 'Имя исполнителя'; Width := 180; end;
+  with fView.lvOutput.Columns.Add do begin Caption := 'Страна'; Width := 100; end;
+  with fView.lvOutput.Columns.Add do begin Caption := 'Жанр'; Width := 120; end;
+
+  // Заполнение таблицы данными из динамического списка
+  Curr := HeadArtists;
+  while Curr <> nil do
+  begin
+    ListItem := fView.lvOutput.Items.Add;
+    ListItem.Caption := IntToStr(Curr^.ArtistCode);
+    ListItem.SubItems.Add(Curr^.Name);
+    ListItem.SubItems.Add(Curr^.Country);
+    ListItem.SubItems.Add(Curr^.Genre);
+
+    Curr := Curr^.Next;
+  end;
+
+  // Отображение формы поверх главного меню
+  fView.ShowModal;
 end;
 
 end.

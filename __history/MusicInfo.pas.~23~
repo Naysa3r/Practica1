@@ -148,7 +148,6 @@ begin
   pmLists.Popup(ButtonPt.X, ButtonPt.Y);
 end;
 
-// опнялнрп юкэанлнб
 procedure TForm1.miAlbumsClick(Sender: TObject);
 var
   Curr: PAlbum;
@@ -189,7 +188,6 @@ begin
   fView.ShowModal;
 end;
 
-// опнялнрп хяонкмхрекеи
 procedure TForm1.miArtistsClick(Sender: TObject);
 var
   Curr: PArtist;
