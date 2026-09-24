@@ -154,7 +154,7 @@ var
 begin
   if HeadArtists = nil then
   begin
-    ShowMessage('В оперативной памяти нет данных! Сначала выполните загрузку.');
+    ShowMessage('В оперативной памяти нет данных! Сначала выполните пункт 1.');
     Exit;
   end;
 
@@ -167,7 +167,7 @@ begin
   with fView.lvOutput.Columns.Add do begin Caption := 'Код'; Width := 60; end;
   with fView.lvOutput.Columns.Add do begin Caption := 'Имя исполнителя'; Width := 180; end;
   with fView.lvOutput.Columns.Add do begin Caption := 'Страна'; Width := 100; end;
-  with fView.lvOutput.Columns.Add do begin Caption := 'Жанр'; Width := 120; end;
+  with fView.lvOutput.Columns.Add do begin Caption := 'Направление (Жанр)'; Width := 120; end;
 
   // Заполнение таблицы данными из динамического списка
   Curr := HeadArtists;

@@ -193,13 +193,14 @@ object Form1: TForm1
   object pmLists: TPopupMenu
     Left = 8
     Top = 128
-    object N1: TMenuItem
+    object miArtists: TMenuItem
       Caption = #1048#1089#1087#1086#1083#1085#1080#1090#1077#1083#1080
+      OnClick = miArtistsClick
     end
-    object N2: TMenuItem
+    object miAlbums: TMenuItem
       Caption = #1040#1083#1100#1073#1086#1084#1099
     end
-    object N3: TMenuItem
+    object miSongs: TMenuItem
       Caption = #1055#1077#1089#1085#1080
     end
   end

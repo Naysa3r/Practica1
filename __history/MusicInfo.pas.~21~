@@ -154,7 +154,7 @@ var
 begin
   if HeadArtists = nil then
   begin
-    ShowMessage('В оперативной памяти нет данных! Сначала выполните загрузку.');
+    ShowMessage('В оперативной памяти нет данных! Сначала выполните пункт 1.');
     Exit;
   end;
 
