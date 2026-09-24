@@ -63,7 +63,7 @@ object Form1: TForm1
     TabOrder = 0
     OnClick = BtnLoadClick
   end
-  object Button2: TButton
+  object BtnView: TButton
     Left = 24
     Top = 128
     Width = 190
@@ -76,6 +76,7 @@ object Form1: TForm1
     Font.Style = []
     ParentFont = False
     TabOrder = 1
+    OnClick = BtnViewClick
   end
   object Button3: TButton
     Left = 24
@@ -188,5 +189,18 @@ object Form1: TForm1
     Font.Style = []
     ParentFont = False
     TabOrder = 9
+  end
+  object pmLists: TPopupMenu
+    Left = 8
+    Top = 128
+    object N1: TMenuItem
+      Caption = #1048#1089#1087#1086#1083#1085#1080#1090#1077#1083#1080
+    end
+    object N2: TMenuItem
+      Caption = #1040#1083#1100#1073#1086#1084#1099
+    end
+    object N3: TMenuItem
+      Caption = #1055#1077#1089#1085#1080
+    end
   end
 end

@@ -11,7 +11,7 @@ type
   TForm1 = class(TForm)
     Label1: TLabel;
     BtnLoad: TButton;
-    BtnView: TButton;
+    Button2: TButton;
     Button3: TButton;
     Button4: TButton;
     Button5: TButton;
@@ -22,12 +22,7 @@ type
     Button10: TButton;
     shpStatus: TShape;
     lblStatus: TLabel;
-    pmLists: TPopupMenu;
-    N1: TMenuItem;
-    N2: TMenuItem;
-    N3: TMenuItem;
     procedure BtnLoadClick(Sender: TObject);
-    procedure BtnViewClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -136,14 +131,6 @@ begin
       lblStatus.Caption := 'Ошибка загрузки: ' + E.Message;
     end;
   end;
-end;
-
-procedure TForm1.BtnViewClick(Sender: TObject);
-var
-  ButtonPt: TPoint;
-begin
-  ButtonPt := BtnView.ClientToScreen(Point(0, BtnView.Height));
-  pmLists.Popup(ButtonPt.X, ButtonPt.Y);
 end;
 
 end.
