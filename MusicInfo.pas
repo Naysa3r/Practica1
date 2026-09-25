@@ -13,7 +13,7 @@ type
     BtnLoad: TButton;
     BtnView: TButton;
     BtnSort: TButton;
-    Button4: TButton;
+    BtnSearch: TButton;
     Button5: TButton;
     Button6: TButton;
     Button7: TButton;
@@ -32,6 +32,7 @@ type
     procedure miAlbumsClick(Sender: TObject);
     procedure miSongsClick(Sender: TObject);
     procedure BtnSortClick(Sender: TObject);
+    procedure BtnSearchClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -139,6 +140,75 @@ begin
       shpStatus.Brush.Color := clRed;
       lblStatus.Caption := 'Ошибка загрузки: ' + E.Message;
     end;
+  end;
+end;
+
+procedure TForm1.BtnSearchClick(Sender: TObject);
+var
+  SearchQuery: string;
+  CurrSong: PSong;
+  ListItem: TListItem;
+  FoundCount: Integer;
+  Min, Sec: Integer;
+begin
+  // Проверка, загружены ли данные в оперативную память
+  if HeadSongs = nil then
+  begin
+    ShowMessage('В оперативной памяти нет данных для поиска! Сначала выполните пункт 1.');
+    Exit;
+  end;
+
+  // Запрос на поиск
+  SearchQuery := InputBox('Поиск песен', 'Введите название песни или его часть:', '');
+
+  // Выход из поиска при пустом запросе
+  if Trim(SearchQuery) = '' then Exit;
+
+  // Настройка окна fView под результаты поиска
+  fView.Caption := 'Результаты поиска по запросу: "' + SearchQuery + '"';
+  fView.lvOutput.Items.Clear;
+  fView.lvOutput.Columns.Clear;
+
+  // Создание колонок
+  with fView.lvOutput.Columns.Add do begin Caption := 'Название найденной песни'; Width := 250; end;
+  with fView.lvOutput.Columns.Add do begin Caption := 'Код альбома'; Width := 100; end;
+  with fView.lvOutput.Columns.Add do begin Caption := 'Длительность'; Width := 120; end;
+
+  FoundCount := 0;
+  CurrSong := HeadSongs;
+
+  // Проход по динамическому списку песен в ОЗУ
+  while CurrSong <> nil do
+  begin
+    // Поиск вхождения подстроки
+    if Pos(LowerCase(SearchQuery), LowerCase(CurrSong^.Title)) > 0 then
+    begin
+      Inc(FoundCount); // Увеличение счетчика совпадений
+
+      // Добавление найденной песни в таблицу на форме просмотра
+      ListItem := fView.lvOutput.Items.Add;
+      ListItem.Caption := CurrSong^.Title;
+      ListItem.SubItems.Add(IntToStr(CurrSong^.AlbumCode));
+
+      // Форматирование секунд в ММ:СС
+      Min := CurrSong^.Duration div 60;
+      Sec := CurrSong^.Duration mod 60;
+      ListItem.SubItems.Add(Format('%.2d:%.2d (%d сек)', [Min, Sec, CurrSong^.Duration]));
+    end;
+
+    CurrSong := CurrSong^.Next; // Переход к следующей песне
+  end;
+
+  // Анализ результата поиска
+  if FoundCount > 0 then
+  begin
+    // Если найдено - отобразить форму с результатами
+    fView.ShowModal;
+  end
+  else
+  begin
+    // Если совпадений нет - вывод предупреждения
+    ShowMessage('Песни с таким названием не найдены.');
   end;
 end;
 

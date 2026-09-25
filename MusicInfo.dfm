@@ -93,7 +93,7 @@ object Form1: TForm1
     TabOrder = 2
     OnClick = BtnSortClick
   end
-  object Button4: TButton
+  object BtnSearch: TButton
     Left = 24
     Top = 208
     Width = 190
@@ -106,6 +106,7 @@ object Form1: TForm1
     Font.Style = []
     ParentFont = False
     TabOrder = 3
+    OnClick = BtnSearchClick
   end
   object Button5: TButton
     Left = 24
