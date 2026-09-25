@@ -98,55 +98,28 @@ implementation
 
     CloseFile(FileA);
 
-// --- ГЕНЕРАЦИЯ АЛЬБОМОВ ---
-  AssignFile(FileAl, 'albums.dat');
-  Rewrite(FileAl);
+    // --- Наполнение альбомов ---
+    AssignFile(FileAl, 'albums.dat');
+    Rewrite(FileAl);
 
-  // Исполнитель 1 (Deep Purple) - Альбом 1972 года
-  RecAlbum.AlbumCode := 10; RecAlbum.ArtistCode := 1; RecAlbum.Title := 'Machine Head'; RecAlbum.Year := 1972;
-  Write(FileAl, RecAlbum);
+    RecAlbum.AlbumCode := 10; RecAlbum.ArtistCode := 1; RecAlbum.Title := 'Machine Head'; RecAlbum.Year := 1972;
+    Write(FileAl, RecAlbum);
+    RecAlbum.AlbumCode := 20; RecAlbum.ArtistCode := 2; RecAlbum.Title := 'Kind of Blue'; RecAlbum.Year := 1959;
+    Write(FileAl, RecAlbum);
+    RecAlbum.AlbumCode := 30; RecAlbum.ArtistCode := 3; RecAlbum.Title := 'After Hours'; RecAlbum.Year := 2020;
+    Write(FileAl, RecAlbum);
 
-  // Исполнитель 2 (Miles Davis) - Альбом 1959 года
-  RecAlbum.AlbumCode := 20; RecAlbum.ArtistCode := 2; RecAlbum.Title := 'Kind of Blue'; RecAlbum.Year := 1959;
-  Write(FileAl, RecAlbum);
+    CloseFile(FileAl);
 
-  // Исполнитель 1 (Deep Purple) - ДОБАВЛЯЕМ Альбом НАМЕРЕННО РАННЕГО 1970 года
-  RecAlbum.AlbumCode := 11; RecAlbum.ArtistCode := 1; RecAlbum.Title := 'In Rock'; RecAlbum.Year := 1970;
-  Write(FileAl, RecAlbum);
+    // --- Наполнение песен ---
+    AssignFile(FileS, 'songs.dat');
+    Rewrite(FileS);
 
-  // Исполнитель 3 (The Weeknd) - Альбом 2020 года
-  RecAlbum.AlbumCode := 30; RecAlbum.ArtistCode := 3; RecAlbum.Title := 'After Hours'; RecAlbum.Year := 2020;
-  Write(FileAl, RecAlbum);
+    RecSong.Title := 'Smoke on the Water'; RecSong.AlbumCode := 10; RecSong.Duration := 340; Write(FileS, RecSong);
+    RecSong.Title := 'Highway Star';       RecSong.AlbumCode := 10; RecSong.Duration := 365; Write(FileS, RecSong);
+    RecSong.Title := 'So What';             RecSong.AlbumCode := 20; RecSong.Duration := 562; Write(FileS, RecSong);
+    RecSong.Title := 'Blinding Lights';    RecSong.AlbumCode := 30; RecSong.Duration := 200; Write(FileS, RecSong);
 
-  // Исполнитель 1 (Deep Purple) - ДОБАВЛЯЕМ Альбом БОЛЕЕ ПОЗДНЕГО 1984 года
-  RecAlbum.AlbumCode := 12; RecAlbum.ArtistCode := 1; RecAlbum.Title := 'Perfect Strangers'; RecAlbum.Year := 1984;
-  Write(FileAl, RecAlbum);
-
-  // Исполнитель 2 (Miles Davis) - ДОБАВЛЯЕМ ВТОРОЙ АЛЬБОМ 1970 года
-  RecAlbum.AlbumCode := 21; RecAlbum.ArtistCode := 2; RecAlbum.Title := 'Bitches Brew'; RecAlbum.Year := 1970;
-  Write(FileAl, RecAlbum);
-
-  CloseFile(FileAl);
-
-  // Наполнение песен ---
-  AssignFile(FileS, 'songs.dat');
-  Rewrite(FileS);
-
-  // Песни для Machine Head (10)
-  RecSong.Title := 'Smoke on the Water'; RecSong.AlbumCode := 10; RecSong.Duration := 340; Write(FileS, RecSong);
-  RecSong.Title := 'Highway Star';       RecSong.AlbumCode := 10; RecSong.Duration := 365; Write(FileS, RecSong);
-  // Песня для In Rock (11)
-  RecSong.Title := 'Child in Time';      RecSong.AlbumCode := 11; RecSong.Duration := 620; Write(FileS, RecSong);
-  // Песня для Perfect Strangers (12)
-  RecSong.Title := 'Perfect Strangers';  RecSong.AlbumCode := 12; RecSong.Duration := 323; Write(FileS, RecSong);
-
-  // Песни для Kind of Blue (20)
-  RecSong.Title := 'So What';             RecSong.AlbumCode := 20; RecSong.Duration := 562; Write(FileS, RecSong);
-  // Песня для Bitches Brew (21)
-  RecSong.Title := 'Pharaoh''s Dance';   RecSong.AlbumCode := 21; RecSong.Duration := 1204; Write(FileS, RecSong);
-
-  // Песня для After Hours (30)
-  RecSong.Title := 'Blinding Lights';    RecSong.AlbumCode := 30; RecSong.Duration := 200; Write(FileS, RecSong);
     CloseFile(FileS);
   end;
 

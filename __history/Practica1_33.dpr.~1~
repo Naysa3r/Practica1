@@ -2,9 +2,7 @@ program Practica1_33;
 
 uses
   Vcl.Forms,
-  MusicInfo in 'MusicInfo.pas' {Form1},
-  DataUnits in 'DataUnits.pas',
-  ViewForm in 'ViewForm.pas' {fView};
+  MusicInfo in 'MusicInfo.pas' {Form1};
 
 {$R *.res}
 
@@ -12,6 +10,5 @@ begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
   Application.CreateForm(TForm1, Form1);
-  Application.CreateForm(TfView, fView);
   Application.Run;
 end.

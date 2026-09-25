@@ -64,8 +64,8 @@ var
   NewSong, LastSong: PSong;
 begin
   // Временная генерация файлов данных
-  //GenerateTestDataFiles;
-  //ShowMessage('Файлы .dat успешно созданы в папке с программой!');
+  // GenerateTestDataFiles;
+  // ShowMessage('Файлы .dat успешно созданы в папке с программой!');
 
   // Очистка старой памяти перед новой загрузкой
   ClearAllLists;

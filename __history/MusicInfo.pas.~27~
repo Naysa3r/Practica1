@@ -12,7 +12,7 @@ type
     Label1: TLabel;
     BtnLoad: TButton;
     BtnView: TButton;
-    BtnSort: TButton;
+    Button3: TButton;
     Button4: TButton;
     Button5: TButton;
     Button6: TButton;
@@ -31,7 +31,6 @@ type
     procedure miArtistsClick(Sender: TObject);
     procedure miAlbumsClick(Sender: TObject);
     procedure miSongsClick(Sender: TObject);
-    procedure BtnSortClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -64,8 +63,8 @@ var
   NewSong, LastSong: PSong;
 begin
   // Временная генерация файлов данных
-  //GenerateTestDataFiles;
-  //ShowMessage('Файлы .dat успешно созданы в папке с программой!');
+  // GenerateTestDataFiles;
+  // ShowMessage('Файлы .dat успешно созданы в папке с программой!');
 
   // Очистка старой памяти перед новой загрузкой
   ClearAllLists;
@@ -140,22 +139,6 @@ begin
       lblStatus.Caption := 'Ошибка загрузки: ' + E.Message;
     end;
   end;
-end;
-
-procedure TForm1.BtnSortClick(Sender: TObject);
-begin
-  // Проверка на загрузку данных
-  if HeadAlbums = nil then
-  begin
-    ShowMessage('В оперативной памяти нет данных! Сначала выполните загрузку.');
-    Exit;
-  end;
-
-  SortAlbumsByArtistAndYear;
-
-  // Уведомляем пользователя об успешном завершении
-  ShowMessage('Альбомы успешно отсортированы внутри исполнителей по годам выпуска!' + sLineBreak +
-              'Выберите пункт меню "Просмотр списков" -> "Альбомы" для отображения результата.');
 end;
 
 procedure TForm1.BtnViewClick(Sender: TObject);
