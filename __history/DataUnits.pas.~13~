@@ -73,7 +73,6 @@ type
   procedure ClearAllLists;
   procedure SortAlbumsByArtistAndYear;
   function IsArtistCodeExists(ACode: Integer): Boolean;
-  function IsAlbumCodeExists(ACode: Integer): Boolean;
 
 implementation
 
@@ -237,17 +236,6 @@ implementation
     Curr := HeadArtists;
     while Curr <> nil do begin
       if Curr^.ArtistCode = ACode then Exit(True);
-      Curr := Curr^.Next;
-    end;
-  end;
-
-  function IsAlbumCodeExists(ACode: Integer): Boolean;
-  var Curr: PAlbum;
-  begin
-    Result := False;
-    Curr := HeadAlbums;
-    while Curr <> nil do begin
-      if Curr^.AlbumCode = ACode then Exit(True);
       Curr := Curr^.Next;
     end;
   end;

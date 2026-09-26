@@ -39,6 +39,7 @@ type
     procedure BtnSearchClick(Sender: TObject);
     procedure BtnAddClick(Sender: TObject);
     procedure miAddArtistClick(Sender: TObject);
+    procedure miAddAlbumClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -282,6 +283,49 @@ begin
   pmLists.Popup(ButtonPt.X, ButtonPt.Y);
 end;
 
+
+procedure TForm1.miAddAlbumClick(Sender: TObject);
+var
+  NewAlb, Curr: PAlbum;
+  SAlbumCode, SArtistCode, STitle, SYear: string;
+  InAlbCode, InArtCode: Integer;
+begin
+  SAlbumCode := InputBox('Новый альбом', 'Введите код альбома (число):', '');
+  if Trim(SAlbumCode) = '' then Exit;
+
+  InAlbCode := StrToIntDef(SAlbumCode, -1);
+  // Проверка уникальности кода альбома
+  if IsAlbumCodeExists(InAlbCode) then begin
+    ShowMessage('Ошибка! Альбом с кодом ' + SAlbumCode + ' уже существует.');
+    Exit;
+  end;
+
+  SArtistCode := InputBox('Новый альбом', 'Введите код исполнителя (для связи):', '');
+  InArtCode := StrToIntDef(SArtistCode, -1);
+  // Проверка на существование исполнителя
+  if not IsArtistCodeExists(InArtCode) then begin
+    ShowMessage('Ошибка! Исполнителя с кодом ' + SArtistCode + ' не существует. Сначала добавьте исполнителя.');
+    Exit;
+  end;
+
+  STitle := InputBox('Новый альбом', 'Введите название альбома:', '');
+  SYear  := InputBox('Новый альбом', 'Введите год выпуска:', '');
+
+  New(NewAlb);
+  NewAlb^.AlbumCode := InAlbCode;
+  NewAlb^.ArtistCode := InArtCode;
+  NewAlb^.Title := STitle;
+  NewAlb^.Year := StrToIntDef(SYear, 0);
+  NewAlb^.Next := nil;
+
+  if HeadAlbums = nil then HeadAlbums := NewAlb
+  else begin
+    Curr := HeadAlbums;
+    while Curr^.Next <> nil do Curr := Curr^.Next;
+    Curr^.Next := NewAlb;
+  end;
+  ShowMessage('Альбом успешно добавлен!');
+end;
 
 procedure TForm1.miAddArtistClick(Sender: TObject);
 var
