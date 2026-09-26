@@ -40,6 +40,7 @@ type
     procedure BtnAddClick(Sender: TObject);
     procedure miAddArtistClick(Sender: TObject);
     procedure miAddAlbumClick(Sender: TObject);
+    procedure miAddSongClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -371,6 +372,46 @@ begin
   end;
 
   ShowMessage('Исполнитель успешно добавлен в оперативную память!');
+end;
+
+procedure TForm1.miAddSongClick(Sender: TObject);
+var
+  NewSong, Curr: PSong;
+  STitle, SAlbumCode, SDuration: string;
+  InAlbCode: Integer;
+begin
+  STitle := InputBox('Новая песня', 'Введите название песни:', '');
+  if Trim(STitle) = '' then Exit;
+
+  // Проверка уникальности названия песни
+  if IsSongTitleExists(STitle) then begin
+    ShowMessage('Ошибка! Песня с названием "' + STitle + '" уже есть в базе.');
+    Exit;
+  end;
+
+  SAlbumCode := InputBox('Новая песня', 'Введите код альбома (для связи):', '');
+  InAlbCode := StrToIntDef(SAlbumCode, -1);
+  // Проверка на существование альбома
+  if not IsAlbumCodeExists(InAlbCode) then begin
+    ShowMessage('Ошибка! Альбома с кодом ' + SAlbumCode + ' не существует.');
+    Exit;
+  end;
+
+  SDuration := InputBox('Новая песня', 'Введите длительность в секундах:', '');
+
+  New(NewSong);
+  NewSong^.Title := STitle;
+  NewSong^.AlbumCode := InAlbCode;
+  NewSong^.Duration := StrToIntDef(SDuration, 0);
+  NewSong^.Next := nil;
+
+  if HeadSongs = nil then HeadSongs := NewSong
+  else begin
+    Curr := HeadSongs;
+    while Curr^.Next <> nil do Curr := Curr^.Next;
+    Curr^.Next := NewSong;
+  end;
+  ShowMessage('Песня успешно добавлена!');
 end;
 
 // ПРОСМОТР АЛЬБОМОВ

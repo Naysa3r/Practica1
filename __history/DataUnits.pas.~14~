@@ -74,7 +74,6 @@ type
   procedure SortAlbumsByArtistAndYear;
   function IsArtistCodeExists(ACode: Integer): Boolean;
   function IsAlbumCodeExists(ACode: Integer): Boolean;
-  function IsSongTitleExists(ATitle: string): Boolean;
 
 implementation
 
@@ -249,17 +248,6 @@ implementation
     Curr := HeadAlbums;
     while Curr <> nil do begin
       if Curr^.AlbumCode = ACode then Exit(True);
-      Curr := Curr^.Next;
-    end;
-  end;
-
-  function IsSongTitleExists(ATitle: string): Boolean;
-  var Curr: PSong;
-  begin
-    Result := False;
-    Curr := HeadSongs;
-    while Curr <> nil do begin
-      if LowerCase(Trim(Curr^.Title)) = LowerCase(Trim(ATitle)) then Exit(True);
       Curr := Curr^.Next;
     end;
   end;
