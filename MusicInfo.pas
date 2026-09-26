@@ -48,6 +48,7 @@ type
     procedure BtnDeleteClick(Sender: TObject);
     procedure miDelArtistClick(Sender: TObject);
     procedure miDelAlbumClick(Sender: TObject);
+    procedure miDelSongClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -684,6 +685,49 @@ begin
     ShowMessage('Исполнитель с кодом ' + SCode + ' и все связанные с ним альбомы и песни были успешно удалены из ОЗУ!')
   else
     ShowMessage('Исполнитель с таким кодом не найден.');
+end;
+
+procedure TForm1.miDelSongClick(Sender: TObject);
+var
+  SAlbumCode, STitle: string;
+  InputAlbumCode: Integer;
+  Curr, Prev: PSong;
+  Found: Boolean;
+begin
+  SAlbumCode := InputBox('Удаление песни', 'Шаг 1: Введите код альбома, в котором находится песня:', '');
+  if Trim(SAlbumCode) = '' then Exit;
+  InputAlbumCode := StrToIntDef(SAlbumCode, -1);
+
+  STitle := InputBox('Удаление песни', 'Шаг 2: Введите точное название песни для удаления:', '');
+  if Trim(STitle) = '' then Exit;
+
+  Curr := HeadSongs;
+  Prev := nil;
+  Found := False;
+
+  while Curr <> nil do
+  begin
+    // Проверка кода альбома и названия песни
+    if (Curr^.AlbumCode = InputAlbumCode) and
+       (LowerCase(Trim(Curr^.Title)) = LowerCase(Trim(STitle))) then
+    begin
+      Found := True;
+      if Prev = nil then
+        HeadSongs := Curr^.Next
+      else
+        Prev^.Next := Curr^.Next;
+
+      Dispose(Curr);
+      Break;
+    end;
+    Prev := Curr;
+    Curr := Curr^.Next;
+  end;
+
+  if Found then
+    ShowMessage('Песня "' + STitle + '" успешно удалена из альбома.')
+  else
+    ShowMessage('Песня с таким названием в указанном альбоме не найдена.');
 end;
 
 // ПРОСМОТР ПЕСЕН

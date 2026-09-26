@@ -14,8 +14,8 @@ type
     BtnView: TButton;
     BtnSort: TButton;
     BtnSearch: TButton;
-    Button5: TButton;
-    Button6: TButton;
+    BtnAdd: TButton;
+    BtnDelete: TButton;
     Button7: TButton;
     Button8: TButton;
     Button9: TButton;
@@ -30,6 +30,10 @@ type
     miAddArtist: TMenuItem;
     miAddAlbum: TMenuItem;
     miAddSong: TMenuItem;
+    pmDelete: TPopupMenu;
+    miDelArtist: TMenuItem;
+    miDelAlbum: TMenuItem;
+    miDelSong: TMenuItem;
     procedure BtnLoadClick(Sender: TObject);
     procedure BtnViewClick(Sender: TObject);
     procedure miArtistsClick(Sender: TObject);
@@ -37,6 +41,13 @@ type
     procedure miSongsClick(Sender: TObject);
     procedure BtnSortClick(Sender: TObject);
     procedure BtnSearchClick(Sender: TObject);
+    procedure BtnAddClick(Sender: TObject);
+    procedure miAddArtistClick(Sender: TObject);
+    procedure miAddAlbumClick(Sender: TObject);
+    procedure miAddSongClick(Sender: TObject);
+    procedure BtnDeleteClick(Sender: TObject);
+    procedure miDelArtistClick(Sender: TObject);
+    procedure miDelAlbumClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -53,6 +64,37 @@ implementation
 uses
   DataUnits, ViewForm;
   // Переменные хранения начала каждого списка
+
+procedure TForm1.BtnAddClick(Sender: TObject);
+var
+  ButtonPt: TPoint;
+begin
+  // Проверка данных на загрузку.
+  if HeadArtists = nil then
+  begin
+    ShowMessage('В оперативной памяти нет данных! Сначала выполните загрузку.');
+    Exit;
+  end;
+
+  // Отображение выпадающего меню под кнопкой
+  ButtonPt := BtnAdd.ClientToScreen(Point(0, BtnAdd.Height));
+  pmAdd.Popup(ButtonPt.X, ButtonPt.Y);
+end;
+
+procedure TForm1.BtnDeleteClick(Sender: TObject);
+var
+  ButtonPt: TPoint;
+begin
+  if HeadArtists = nil then
+  begin
+    ShowMessage('База данных пуста! Удалять нечего.');
+    Exit;
+  end;
+
+  // Меню удаления под кнопкой
+  ButtonPt := BtnDelete.ClientToScreen(Point(0, BtnDelete.Height));
+  pmDelete.Popup(ButtonPt.X, ButtonPt.Y);
+end;
 
 procedure TForm1.BtnLoadClick(Sender: TObject);
 var
@@ -264,6 +306,136 @@ begin
   pmLists.Popup(ButtonPt.X, ButtonPt.Y);
 end;
 
+
+procedure TForm1.miAddAlbumClick(Sender: TObject);
+var
+  NewAlb, Curr: PAlbum;
+  SAlbumCode, SArtistCode, STitle, SYear: string;
+  InAlbCode, InArtCode: Integer;
+begin
+  SAlbumCode := InputBox('Новый альбом', 'Введите код альбома (число):', '');
+  if Trim(SAlbumCode) = '' then Exit;
+
+  InAlbCode := StrToIntDef(SAlbumCode, -1);
+  // Проверка уникальности кода альбома
+  if IsAlbumCodeExists(InAlbCode) then begin
+    ShowMessage('Ошибка! Альбом с кодом ' + SAlbumCode + ' уже существует.');
+    Exit;
+  end;
+
+  SArtistCode := InputBox('Новый альбом', 'Введите код исполнителя (для связи):', '');
+  InArtCode := StrToIntDef(SArtistCode, -1);
+  // Проверка на существование исполнителя
+  if not IsArtistCodeExists(InArtCode) then begin
+    ShowMessage('Ошибка! Исполнителя с кодом ' + SArtistCode + ' не существует. Сначала добавьте исполнителя.');
+    Exit;
+  end;
+
+  STitle := InputBox('Новый альбом', 'Введите название альбома:', '');
+  SYear  := InputBox('Новый альбом', 'Введите год выпуска:', '');
+
+  New(NewAlb);
+  NewAlb^.AlbumCode := InAlbCode;
+  NewAlb^.ArtistCode := InArtCode;
+  NewAlb^.Title := STitle;
+  NewAlb^.Year := StrToIntDef(SYear, 0);
+  NewAlb^.Next := nil;
+
+  if HeadAlbums = nil then HeadAlbums := NewAlb
+  else begin
+    Curr := HeadAlbums;
+    while Curr^.Next <> nil do Curr := Curr^.Next;
+    Curr^.Next := NewAlb;
+  end;
+  ShowMessage('Альбом успешно добавлен!');
+end;
+
+procedure TForm1.miAddArtistClick(Sender: TObject);
+var
+  NewArt, Curr: PArtist;
+  SCode, SName, SCountry, SGenre: string;
+  InputCode: Integer;
+begin
+  // Запрос данных у пользователя
+  SCode    := InputBox('Новый исполнитель', 'Введите числом уникальный код исполнителя:', '');
+  if Trim(SCode) = '' then Exit;
+
+  InputCode := StrToIntDef(SCode, -1);
+  if InputCode <= 0 then begin
+    ShowMessage('Ошибка! Код должен быть положительным числом.');
+    Exit;
+  end;
+  // Проверка на уникальность кода
+  if IsArtistCodeExists(InputCode) then begin
+    ShowMessage('Ошибка! Исполнитель с кодом ' + SCode + ' уже существует в системе.');
+    Exit;
+  end;
+
+  SName    := InputBox('Новый исполнитель', 'Введите название группы:', '');
+  SCountry := InputBox('Новый исполнитель', 'Введите страну:', '');
+  SGenre   := InputBox('Новый исполнитель', 'Введите музыкальный жанр:', '');
+
+  // Выделение памяти под новый динамический узел
+  New(NewArt);
+  NewArt^.ArtistCode := StrToIntDef(SCode, 0);
+  NewArt^.Name := SName;
+  NewArt^.Country := SCountry;
+  NewArt^.Genre := SGenre;
+  NewArt^.Next := nil; // Новый элемент указывает в nil
+
+  // Вставка узла в конец списка в ОЗУ
+  if HeadArtists = nil then HeadArtists := NewArt
+  else
+  begin
+    Curr := HeadArtists;
+    while Curr^.Next <> nil do
+      Curr := Curr^.Next; // Поиск последнего элемента списка
+    Curr^.Next := NewArt;  // Привязка нового к последнему
+  end;
+
+  ShowMessage('Исполнитель успешно добавлен в оперативную память!');
+end;
+
+procedure TForm1.miAddSongClick(Sender: TObject);
+var
+  NewSong, Curr: PSong;
+  STitle, SAlbumCode, SDuration: string;
+  InAlbCode: Integer;
+begin
+  STitle := InputBox('Новая песня', 'Введите название песни:', '');
+  if Trim(STitle) = '' then Exit;
+
+  // Проверка уникальности названия песни
+  if IsSongTitleExists(STitle) then begin
+    ShowMessage('Ошибка! Песня с названием "' + STitle + '" уже есть в базе.');
+    Exit;
+  end;
+
+  SAlbumCode := InputBox('Новая песня', 'Введите код альбома (для связи):', '');
+  InAlbCode := StrToIntDef(SAlbumCode, -1);
+  // Проверка на существование альбома
+  if not IsAlbumCodeExists(InAlbCode) then begin
+    ShowMessage('Ошибка! Альбома с кодом ' + SAlbumCode + ' не существует.');
+    Exit;
+  end;
+
+  SDuration := InputBox('Новая песня', 'Введите длительность в секундах:', '');
+
+  New(NewSong);
+  NewSong^.Title := STitle;
+  NewSong^.AlbumCode := InAlbCode;
+  NewSong^.Duration := StrToIntDef(SDuration, 0);
+  NewSong^.Next := nil;
+
+  if HeadSongs = nil then HeadSongs := NewSong
+  else begin
+    Curr := HeadSongs;
+    while Curr^.Next <> nil do Curr := Curr^.Next;
+    Curr^.Next := NewSong;
+  end;
+  ShowMessage('Песня успешно добавлена!');
+end;
+
 // ПРОСМОТР АЛЬБОМОВ
 procedure TForm1.miAlbumsClick(Sender: TObject);
 var
@@ -343,6 +515,175 @@ begin
 
   // Отображение формы поверх главного меню
   fView.ShowModal;
+end;
+
+procedure TForm1.miDelAlbumClick(Sender: TObject);
+var
+  SCode: string;
+  InputCode: Integer;
+
+  CurrAlb, PrevAlb: PAlbum;
+  AlbFound: Boolean;
+
+  CurrSong, PrevSong, TempSong: PSong;
+begin
+  SCode := InputBox('Удаление альбома', 'Введите код альбома для удаления:', '');
+  if Trim(SCode) = '' then Exit;
+  InputCode := StrToIntDef(SCode, -1);
+
+  // Удаление всех песен, привязанных к альбому
+  CurrSong := HeadSongs;
+  PrevSong := nil;
+  while CurrSong <> nil do
+  begin
+    if CurrSong^.AlbumCode = InputCode then
+    begin
+      TempSong := CurrSong;
+      if PrevSong = nil then
+        HeadSongs := CurrSong^.Next
+      else
+        PrevSong^.Next := CurrSong^.Next;
+
+      CurrSong := CurrSong^.Next;
+      Dispose(TempSong);
+    end
+    else
+    begin
+      PrevSong := CurrSong;
+      CurrSong := CurrSong^.Next;
+    end;
+  end;
+
+  // Удаление альбома
+  CurrAlb := HeadAlbums;
+  PrevAlb := nil;
+  AlbFound := False;
+
+  while CurrAlb <> nil do
+  begin
+    if CurrAlb^.AlbumCode = InputCode then
+    begin
+      AlbFound := True;
+      if PrevAlb = nil then
+        HeadAlbums := CurrAlb^.Next
+      else
+        PrevAlb^.Next := CurrAlb^.Next;
+
+      Dispose(CurrAlb);
+      Break;
+    end;
+    PrevAlb := CurrAlb;
+    CurrAlb := CurrAlb^.Next;
+  end;
+
+  if AlbFound then
+    ShowMessage('Альбом с кодом ' + SCode + ' и все его песни успешно удалены из ОЗУ.')
+  else
+    ShowMessage('Альбом с таким кодом не найден.');
+end;
+
+procedure TForm1.miDelArtistClick(Sender: TObject);
+var
+  SCode: string;
+  InputCode: Integer;
+
+  // Переменные для удаления исполнителя
+  CurrArt, PrevArt: PArtist;
+  ArtFound: Boolean;
+
+  // Переменные для каскадного удаления альбомов и песен
+  CurrAlb, PrevAlb, TempAlb: PAlbum;
+  CurrSong, PrevSong, TempSong: PSong;
+begin
+  SCode := InputBox('Каскадное удаление', 'Введите код исполнителя для ПОЛНОГО удаления:', '');
+  if Trim(SCode) = '' then Exit;
+  InputCode := StrToIntDef(SCode, -1);
+
+  // Каскадное удаление песен
+  // Проверка входит ли песня в альбом, который принадлежит удаляемому исполнителю
+  CurrSong := HeadSongs;
+  PrevSong := nil;
+  while CurrSong <> nil do
+  begin
+    // Поиск альбома песни в ОЗУ
+    CurrAlb := HeadAlbums;
+    while CurrAlb <> nil do
+    begin
+      if (CurrSong^.AlbumCode = CurrAlb^.AlbumCode) and (CurrAlb^.ArtistCode = InputCode) then
+        Break; // Альбом найден и он принадлежит удаляемому исполнителю
+      CurrAlb := CurrAlb^.Next;
+    end;
+
+    // Если альбом принадлежит удаляемому автору - удаляется песня из памяти
+    if CurrAlb <> nil then
+    begin
+      TempSong := CurrSong;
+      if PrevSong = nil then
+        HeadSongs := CurrSong^.Next
+      else
+        PrevSong^.Next := CurrSong^.Next;
+
+      CurrSong := CurrSong^.Next;
+      Dispose(TempSong); // Удаление песни
+    end
+    else
+    begin
+      // Переход на следующую при несовпадении
+      PrevSong := CurrSong;
+      CurrSong := CurrSong^.Next;
+    end;
+  end;
+
+  // Каскадное удаление альбомов
+  CurrAlb := HeadAlbums;
+  PrevAlb := nil;
+  while CurrAlb <> nil do
+  begin
+    if CurrAlb^.ArtistCode = InputCode then
+    begin
+      TempAlb := CurrAlb;
+      if PrevAlb = nil then
+        HeadAlbums := CurrAlb^.Next
+      else
+        PrevAlb^.Next := CurrAlb^.Next;
+
+      CurrAlb := CurrAlb^.Next;
+      Dispose(TempAlb); // Удаление альбома
+    end
+    else
+    begin
+      PrevAlb := CurrAlb;
+      CurrAlb := CurrAlb^.Next;
+    end;
+  end;
+
+  // Удаление исполнителя
+  CurrArt := HeadArtists;
+  PrevArt := nil;
+  ArtFound := False;
+
+  while CurrArt <> nil do
+  begin
+    if CurrArt^.ArtistCode = InputCode then
+    begin
+      ArtFound := True;
+      if PrevArt = nil then
+        HeadArtists := CurrArt^.Next
+      else
+        PrevArt^.Next := CurrArt^.Next;
+
+      Dispose(CurrArt); // Удаление исполнителя из памяти
+      Break;
+    end;
+    PrevArt := CurrArt;
+    CurrArt := CurrArt^.Next;
+  end;
+
+  // Отображение итога операции
+  if ArtFound then
+    ShowMessage('Исполнитель с кодом ' + SCode + ' и все связанные с ним альбомы и песни были успешно удалены из ОЗУ!')
+  else
+    ShowMessage('Исполнитель с таким кодом не найден.');
 end;
 
 // ПРОСМОТР ПЕСЕН
