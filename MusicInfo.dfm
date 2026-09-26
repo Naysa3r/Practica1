@@ -235,6 +235,7 @@ object Form1: TForm1
     end
     object miDelAlbum: TMenuItem
       Caption = #1059#1076#1072#1083#1080#1090#1100' '#1072#1083#1100#1073#1086#1084
+      OnClick = miDelAlbumClick
     end
     object miDelSong: TMenuItem
       Caption = #1059#1076#1072#1083#1080#1090#1100' '#1087#1077#1089#1085#1102
