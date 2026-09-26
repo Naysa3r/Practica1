@@ -123,7 +123,7 @@ object Form1: TForm1
     TabOrder = 4
     OnClick = BtnAddClick
   end
-  object Button6: TButton
+  object BtnDelete: TButton
     Left = 24
     Top = 288
     Width = 190
@@ -136,6 +136,7 @@ object Form1: TForm1
     Font.Style = []
     ParentFont = False
     TabOrder = 5
+    OnClick = BtnDeleteClick
   end
   object Button7: TButton
     Left = 24
@@ -223,6 +224,20 @@ object Form1: TForm1
     object miAddSong: TMenuItem
       Caption = #1044#1086#1073#1072#1074#1080#1090#1100' '#1087#1077#1089#1085#1102
       OnClick = miAddSongClick
+    end
+  end
+  object pmDelete: TPopupMenu
+    Left = 8
+    Top = 288
+    object miDelArtist: TMenuItem
+      Caption = #1059#1076#1072#1083#1080#1090#1100' '#1080#1089#1087#1086#1083#1085#1080#1090#1077#1083#1103
+      OnClick = miDelArtistClick
+    end
+    object miDelAlbum: TMenuItem
+      Caption = #1059#1076#1072#1083#1080#1090#1100' '#1072#1083#1100#1073#1086#1084
+    end
+    object miDelSong: TMenuItem
+      Caption = #1059#1076#1072#1083#1080#1090#1100' '#1087#1077#1089#1085#1102
     end
   end
 end

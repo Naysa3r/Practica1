@@ -15,7 +15,7 @@ type
     BtnSort: TButton;
     BtnSearch: TButton;
     BtnAdd: TButton;
-    Button6: TButton;
+    BtnDelete: TButton;
     Button7: TButton;
     Button8: TButton;
     Button9: TButton;
@@ -30,6 +30,10 @@ type
     miAddArtist: TMenuItem;
     miAddAlbum: TMenuItem;
     miAddSong: TMenuItem;
+    pmDelete: TPopupMenu;
+    miDelArtist: TMenuItem;
+    miDelAlbum: TMenuItem;
+    miDelSong: TMenuItem;
     procedure BtnLoadClick(Sender: TObject);
     procedure BtnViewClick(Sender: TObject);
     procedure miArtistsClick(Sender: TObject);
@@ -41,6 +45,8 @@ type
     procedure miAddArtistClick(Sender: TObject);
     procedure miAddAlbumClick(Sender: TObject);
     procedure miAddSongClick(Sender: TObject);
+    procedure BtnDeleteClick(Sender: TObject);
+    procedure miDelArtistClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -72,6 +78,21 @@ begin
   // Отображение выпадающего меню под кнопкой
   ButtonPt := BtnAdd.ClientToScreen(Point(0, BtnAdd.Height));
   pmAdd.Popup(ButtonPt.X, ButtonPt.Y);
+end;
+
+procedure TForm1.BtnDeleteClick(Sender: TObject);
+var
+  ButtonPt: TPoint;
+begin
+  if HeadArtists = nil then
+  begin
+    ShowMessage('База данных пуста! Удалять нечего.');
+    Exit;
+  end;
+
+  // Меню удаления под кнопкой
+  ButtonPt := BtnDelete.ClientToScreen(Point(0, BtnDelete.Height));
+  pmDelete.Popup(ButtonPt.X, ButtonPt.Y);
 end;
 
 procedure TForm1.BtnLoadClick(Sender: TObject);
@@ -493,6 +514,110 @@ begin
 
   // Отображение формы поверх главного меню
   fView.ShowModal;
+end;
+
+procedure TForm1.miDelArtistClick(Sender: TObject);
+var
+  SCode: string;
+  InputCode: Integer;
+
+  // Переменные для удаления исполнителя
+  CurrArt, PrevArt: PArtist;
+  ArtFound: Boolean;
+
+  // Переменные для каскадного удаления альбомов и песен
+  CurrAlb, PrevAlb, TempAlb: PAlbum;
+  CurrSong, PrevSong, TempSong: PSong;
+begin
+  SCode := InputBox('Каскадное удаление', 'Введите код исполнителя для ПОЛНОГО удаления:', '');
+  if Trim(SCode) = '' then Exit;
+  InputCode := StrToIntDef(SCode, -1);
+
+  // Каскадное удаление песен
+  // Проверка входит ли песня в альбом, который принадлежит удаляемому исполнителю
+  CurrSong := HeadSongs;
+  PrevSong := nil;
+  while CurrSong <> nil do
+  begin
+    // Поиск альбома песни в ОЗУ
+    CurrAlb := HeadAlbums;
+    while CurrAlb <> nil do
+    begin
+      if (CurrSong^.AlbumCode = CurrAlb^.AlbumCode) and (CurrAlb^.ArtistCode = InputCode) then
+        Break; // Альбом найден и он принадлежит удаляемому исполнителю
+      CurrAlb := CurrAlb^.Next;
+    end;
+
+    // Если альбом принадлежит удаляемому автору - удаляется песня из памяти
+    if CurrAlb <> nil then
+    begin
+      TempSong := CurrSong;
+      if PrevSong = nil then
+        HeadSongs := CurrSong^.Next
+      else
+        PrevSong^.Next := CurrSong^.Next;
+
+      CurrSong := CurrSong^.Next;
+      Dispose(TempSong); // Удаление песни
+    end
+    else
+    begin
+      // Переход на следующую при несовпадении
+      PrevSong := CurrSong;
+      CurrSong := CurrSong^.Next;
+    end;
+  end;
+
+  // Каскадное удаление альбомов
+  CurrAlb := HeadAlbums;
+  PrevAlb := nil;
+  while CurrAlb <> nil do
+  begin
+    if CurrAlb^.ArtistCode = InputCode then
+    begin
+      TempAlb := CurrAlb;
+      if PrevAlb = nil then
+        HeadAlbums := CurrAlb^.Next
+      else
+        PrevAlb^.Next := CurrAlb^.Next;
+
+      CurrAlb := CurrAlb^.Next;
+      Dispose(TempAlb); // Удаление альбома
+    end
+    else
+    begin
+      PrevAlb := CurrAlb;
+      CurrAlb := CurrAlb^.Next;
+    end;
+  end;
+
+  // Удаление исполнителя
+  CurrArt := HeadArtists;
+  PrevArt := nil;
+  ArtFound := False;
+
+  while CurrArt <> nil do
+  begin
+    if CurrArt^.ArtistCode = InputCode then
+    begin
+      ArtFound := True;
+      if PrevArt = nil then
+        HeadArtists := CurrArt^.Next
+      else
+        PrevArt^.Next := CurrArt^.Next;
+
+      Dispose(CurrArt); // Удаление исполнителя из памяти
+      Break;
+    end;
+    PrevArt := CurrArt;
+    CurrArt := CurrArt^.Next;
+  end;
+
+  // Отображение итога операции
+  if ArtFound then
+    ShowMessage('Исполнитель с кодом ' + SCode + ' и все связанные с ним альбомы и песни были успешно удалены из ОЗУ!')
+  else
+    ShowMessage('Исполнитель с таким кодом не найден.');
 end;
 
 // ПРОСМОТР ПЕСЕН
