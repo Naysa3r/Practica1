@@ -1,16 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <BorlandProject>
 	<Transactions>
+    <Transaction>1899.12.30 00:00:00.000.951,D:\OneDrive\Документы\Учеба\1\Практика_ознакомительная\Prac\MusicInfo.pas=D:\OneDrive\Документы\Учеба\1\Практика_ознакомительная\Prac\Practica1_33.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.773,=D:\OneDrive\Документы\Учеба\1\Практика_ознакомительная\Prac\Unit2.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.424,D:\OneDrive\Документы\Учеба\1\Практика_ознакомительная\Prac\Unit2.pas=D:\OneDrive\Документы\Учеба\1\Практика_ознакомительная\Prac\ViewForm.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.583,D:\OneDrive\Документы\Учеба\1\Практика_ознакомительная\Prac\Practica1_33.dproj=D:\OneDrive\Документы\Embarcadero\Studio\Projects\Project2.dproj</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.606,D:\OneDrive\Документы\Учеба\1\Практика_ознакомительная\Prac\Practica1_33.dfm=D:\OneDrive\Документы\Embarcadero\Studio\Projects\Unit1.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.249,D:\OneDrive\Документы\Учеба\1\Практика_ознакомительная\Prac\Unit1.pas=D:\OneDrive\Документы\Учеба\1\Практика_ознакомительная\Prac\DataUnits.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.424,D:\OneDrive\Документы\Учеба\1\Практика_ознакомительная\Prac\Unit2.dfm=D:\OneDrive\Документы\Учеба\1\Практика_ознакомительная\Prac\ViewForm.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.606,D:\OneDrive\Документы\Учеба\1\Практика_ознакомительная\Prac\Practica1_33.pas=D:\OneDrive\Документы\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.951,D:\OneDrive\Документы\Учеба\1\Практика_ознакомительная\Prac\MusicInfo.dfm=D:\OneDrive\Документы\Учеба\1\Практика_ознакомительная\Prac\Practica1_33.dfm</Transaction>
     <Transaction>1899.12.30 00:00:00.000.704,=D:\OneDrive\Документы\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.606,D:\OneDrive\Документы\Embarcadero\Studio\Projects\Unit1.pas=D:\OneDrive\Документы\Учеба\1\Практика_ознакомительная\Prac\Practica1_33.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.951,D:\OneDrive\Документы\Учеба\1\Практика_ознакомительная\Prac\Practica1_33.dfm=D:\OneDrive\Документы\Учеба\1\Практика_ознакомительная\Prac\MusicInfo.dfm</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.951,D:\OneDrive\Документы\Учеба\1\Практика_ознакомительная\Prac\Practica1_33.pas=D:\OneDrive\Документы\Учеба\1\Практика_ознакомительная\Prac\MusicInfo.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.606,D:\OneDrive\Документы\Embarcadero\Studio\Projects\Unit1.dfm=D:\OneDrive\Документы\Учеба\1\Практика_ознакомительная\Prac\Practica1_33.dfm</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.583,D:\OneDrive\Документы\Embarcadero\Studio\Projects\Project2.dproj=D:\OneDrive\Документы\Учеба\1\Практика_ознакомительная\Prac\Practica1_33.dproj</Transaction>
-    <Transaction>2026.09.24 19:32:22.335,=D:\OneDrive\Документы\Учеба\1\Практика_ознакомительная\Prac\Unit1.pas</Transaction>
-    <Transaction>2026.09.24 19:32:45.249,D:\OneDrive\Документы\Учеба\1\Практика_ознакомительная\Prac\DataUnits.pas=D:\OneDrive\Документы\Учеба\1\Практика_ознакомительная\Prac\Unit1.pas</Transaction>
-    <Transaction>2026.09.24 22:18:46.773,=D:\OneDrive\Документы\Учеба\1\Практика_ознакомительная\Prac\Unit2.pas</Transaction>
-    <Transaction>2026.09.24 22:19:22.424,D:\OneDrive\Документы\Учеба\1\Практика_ознакомительная\Prac\ViewForm.dfm=D:\OneDrive\Документы\Учеба\1\Практика_ознакомительная\Prac\Unit2.dfm</Transaction>
-    <Transaction>2026.09.24 22:19:22.424,D:\OneDrive\Документы\Учеба\1\Практика_ознакомительная\Prac\ViewForm.pas=D:\OneDrive\Документы\Учеба\1\Практика_ознакомительная\Prac\Unit2.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.335,=D:\OneDrive\Документы\Учеба\1\Практика_ознакомительная\Prac\Unit1.pas</Transaction>
   </Transactions>
 </BorlandProject>

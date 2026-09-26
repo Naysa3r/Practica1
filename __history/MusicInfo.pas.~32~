@@ -145,95 +145,71 @@ end;
 
 procedure TForm1.BtnSearchClick(Sender: TObject);
 var
-  SearchArtistName: string;
-  CurrArtist: PArtist;
-  CurrAlbum: PAlbum;
+  SearchQuery: string;
   CurrSong: PSong;
   ListItem: TListItem;
-  TargetArtistCode: Integer;
   FoundCount: Integer;
   Min, Sec: Integer;
 begin
-  // Проверка на загрузку данных в память
-  if (HeadArtists = nil) or (HeadSongs = nil) or (HeadAlbums = nil) then
+  // Проверка, загружены ли данные в оперативную память
+  if HeadSongs = nil then
   begin
-    ShowMessage('В оперативной памяти нет данных! Сначала выполните загрузку.');
+    ShowMessage('В оперативной памяти нет данных для поиска! Сначала выполните пункт 1.');
     Exit;
   end;
 
-  // Запрапрос имени исполнителя
-  SearchArtistName := InputBox('Поиск песен по исполнителю', 'Введите имя исполнителя:', '');
-  if Trim(SearchArtistName) = '' then Exit;
+  // Запрос на поиск
+  SearchQuery := InputBox('Поиск песен', 'Введите название песни или его часть:', '');
 
-  // Поиск исполнителя по имени, чтобы узнать его ArtistCode
-  TargetArtistCode := -1;
-  CurrArtist := HeadArtists;
-  while CurrArtist <> nil do
-  begin
-    if LowerCase(Trim(CurrArtist^.Name)) = LowerCase(Trim(SearchArtistName)) then
-    begin
-      TargetArtistCode := CurrArtist^.ArtistCode;
-      Break; // Выход из цикла при нахождении
-    end;
-    CurrArtist := CurrArtist^.Next;
-  end;
+  // Выход из поиска при пустом запросе
+  if Trim(SearchQuery) = '' then Exit;
 
-  // Если исполнитель с таким именем не найден
-  if TargetArtistCode = -1 then
-  begin
-    ShowMessage('Исполнитель "' + SearchArtistName + '" не найден в базе.');
-    Exit;
-  end;
-
-  // Настройка окна fView под вывод найденных песен
-  fView.Caption := 'Песни исполнителя: ' + SearchArtistName;
+  // Настройка окна fView под результаты поиска
+  fView.Caption := 'Результаты поиска по запросу: "' + SearchQuery + '"';
   fView.lvOutput.Items.Clear;
   fView.lvOutput.Columns.Clear;
 
-  with fView.lvOutput.Columns.Add do begin Caption := 'Название песни'; Width := 220; end;
-  with fView.lvOutput.Columns.Add do begin Caption := 'Альбом'; Width := 150; end;
-  with fView.lvOutput.Columns.Add do begin Caption := 'Длительность'; Width := 125; end;
+  // Создание колонок
+  with fView.lvOutput.Columns.Add do begin Caption := 'Название найденной песни'; Width := 250; end;
+  with fView.lvOutput.Columns.Add do begin Caption := 'Код альбома'; Width := 100; end;
+  with fView.lvOutput.Columns.Add do begin Caption := 'Длительность'; Width := 120; end;
 
   FoundCount := 0;
-
-  // Проход по всем песням в ОЗУ
   CurrSong := HeadSongs;
+
+  // Проход по динамическому списку песен в ОЗУ
   while CurrSong <> nil do
   begin
-    // Для каждой песни поиск альбома, к которому она принадлежит
-    CurrAlbum := HeadAlbums;
-    while CurrAlbum <> nil do
+    // Поиск вхождения подстроки
+    if Pos(LowerCase(SearchQuery), LowerCase(CurrSong^.Title)) > 0 then
     begin
-      // Если код альбома у песни совпал с кодом альбома в списке,
-      // и этот альбом принадлежит искомому исполнителю
-      if (CurrSong^.AlbumCode = CurrAlbum^.AlbumCode) and
-         (CurrAlbum^.ArtistCode = TargetArtistCode) then
-      begin
-        Inc(FoundCount);
+      Inc(FoundCount); // Увеличение счетчика совпадений
 
-        // Добавление строки в таблицу
-        ListItem := fView.lvOutput.Items.Add;
-        ListItem.Caption := CurrSong^.Title;          // Название песни
-        ListItem.SubItems.Add(CurrAlbum^.Title);       // Название альбома
+      // Добавление найденной песни в таблицу на форме просмотра
+      ListItem := fView.lvOutput.Items.Add;
+      ListItem.Caption := CurrSong^.Title;
+      ListItem.SubItems.Add(IntToStr(CurrSong^.AlbumCode));
 
-        // Время ММ:СС
-        Min := CurrSong^.Duration div 60;
-        Sec := CurrSong^.Duration mod 60;
-        ListItem.SubItems.Add(Format('%.2d:%.2d (%d сек)', [Min, Sec, CurrSong^.Duration]));
-
-        Break; // Альбом определен, переход к следующей песне
-      end;
-      CurrAlbum := CurrAlbum^.Next;
+      // Форматирование секунд в ММ:СС
+      Min := CurrSong^.Duration div 60;
+      Sec := CurrSong^.Duration mod 60;
+      ListItem.SubItems.Add(Format('%.2d:%.2d (%d сек)', [Min, Sec, CurrSong^.Duration]));
     end;
 
-    CurrSong := CurrSong^.Next;
+    CurrSong := CurrSong^.Next; // Переход к следующей песне
   end;
 
-  // Отображение результата
+  // Анализ результата поиска
   if FoundCount > 0 then
-    fView.ShowModal
+  begin
+    // Если найдено - отобразить форму с результатами
+    fView.ShowModal;
+  end
   else
-    ShowMessage('У исполнителя "' + SearchArtistName + '" пока нет добавленных песен.');
+  begin
+    // Если совпадений нет - вывод предупреждения
+    ShowMessage('Песни с таким названием не найдены.');
+  end;
 end;
 
 procedure TForm1.BtnSortClick(Sender: TObject);

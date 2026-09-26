@@ -12,8 +12,8 @@ type
     Label1: TLabel;
     BtnLoad: TButton;
     BtnView: TButton;
-    Button3: TButton;
-    Button4: TButton;
+    BtnSort: TButton;
+    BtnSearch: TButton;
     Button5: TButton;
     Button6: TButton;
     Button7: TButton;
@@ -30,6 +30,9 @@ type
     procedure BtnViewClick(Sender: TObject);
     procedure miArtistsClick(Sender: TObject);
     procedure miAlbumsClick(Sender: TObject);
+    procedure miSongsClick(Sender: TObject);
+    procedure BtnSortClick(Sender: TObject);
+    procedure BtnSearchClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -62,8 +65,8 @@ var
   NewSong, LastSong: PSong;
 begin
   // Временная генерация файлов данных
-  // GenerateTestDataFiles;
-  // ShowMessage('Файлы .dat успешно созданы в папке с программой!');
+  //GenerateTestDataFiles;
+  //ShowMessage('Файлы .dat успешно созданы в папке с программой!');
 
   // Очистка старой памяти перед новой загрузкой
   ClearAllLists;
@@ -140,6 +143,91 @@ begin
   end;
 end;
 
+procedure TForm1.BtnSearchClick(Sender: TObject);
+var
+  SearchQuery: string;
+  CurrSong: PSong;
+  ListItem: TListItem;
+  FoundCount: Integer;
+  Min, Sec: Integer;
+begin
+  // Проверка, загружены ли данные в оперативную память
+  if HeadSongs = nil then
+  begin
+    ShowMessage('В оперативной памяти нет данных! Сначала выполните загрузку.');
+    Exit;
+  end;
+
+  // Запрос на поиск
+  SearchQuery := InputBox('Поиск песен', 'Введите название песни или его часть:', '');
+
+  // Выход из поиска при пустом запросе
+  if Trim(SearchQuery) = '' then Exit;
+
+  // Настройка окна fView под результаты поиска
+  fView.Caption := 'Результаты поиска по запросу: "' + SearchQuery + '"';
+  fView.lvOutput.Items.Clear;
+  fView.lvOutput.Columns.Clear;
+
+  // Создание колонок
+  with fView.lvOutput.Columns.Add do begin Caption := 'Название найденной песни'; Width := 250; end;
+  with fView.lvOutput.Columns.Add do begin Caption := 'Код альбома'; Width := 100; end;
+  with fView.lvOutput.Columns.Add do begin Caption := 'Длительность'; Width := 120; end;
+
+  FoundCount := 0;
+  CurrSong := HeadSongs;
+
+  // Проход по динамическому списку песен в ОЗУ
+  while CurrSong <> nil do
+  begin
+    // Поиск вхождения подстроки
+    if Pos(LowerCase(SearchQuery), LowerCase(CurrSong^.Title)) > 0 then
+    begin
+      Inc(FoundCount); // Увеличение счетчика совпадений
+
+      // Добавление найденной песни в таблицу на форме просмотра
+      ListItem := fView.lvOutput.Items.Add;
+      ListItem.Caption := CurrSong^.Title;
+      ListItem.SubItems.Add(IntToStr(CurrSong^.AlbumCode));
+
+      // Форматирование секунд в ММ:СС
+      Min := CurrSong^.Duration div 60;
+      Sec := CurrSong^.Duration mod 60;
+      ListItem.SubItems.Add(Format('%.2d:%.2d (%d сек)', [Min, Sec, CurrSong^.Duration]));
+    end;
+
+    CurrSong := CurrSong^.Next; // Переход к следующей песне
+  end;
+
+  // Анализ результата поиска
+  if FoundCount > 0 then
+  begin
+    // Если найдено - отобразить форму с результатами
+    fView.ShowModal;
+  end
+  else
+  begin
+    // Если совпадений нет - вывод предупреждения
+    ShowMessage('Песни с таким названием не найдены.');
+  end;
+end;
+
+procedure TForm1.BtnSortClick(Sender: TObject);
+begin
+  // Проверка на загрузку данных
+  if HeadAlbums = nil then
+  begin
+    ShowMessage('В оперативной памяти нет данных! Сначала выполните загрузку.');
+    Exit;
+  end;
+
+  SortAlbumsByArtistAndYear;
+
+  // Уведомляем пользователя об успешном завершении
+  ShowMessage('Альбомы успешно отсортированы внутри исполнителей по годам выпуска!' + sLineBreak +
+              'Выберите пункт меню "Просмотр списков" -> "Альбомы" для отображения результата.');
+end;
+
 procedure TForm1.BtnViewClick(Sender: TObject);
 var
   ButtonPt: TPoint;
@@ -148,6 +236,7 @@ begin
   pmLists.Popup(ButtonPt.X, ButtonPt.Y);
 end;
 
+// ПРОСМОТР АЛЬБОМОВ
 procedure TForm1.miAlbumsClick(Sender: TObject);
 var
   Curr: PAlbum;
@@ -188,6 +277,7 @@ begin
   fView.ShowModal;
 end;
 
+// ПРОСМОТР ИСПОЛНИТЕЛЕЙ
 procedure TForm1.miArtistsClick(Sender: TObject);
 var
   Curr: PArtist;
@@ -224,6 +314,50 @@ begin
   end;
 
   // Отображение формы поверх главного меню
+  fView.ShowModal;
+end;
+
+// ПРОСМОТР ПЕСЕН
+procedure TForm1.miSongsClick(Sender: TObject);
+var
+  Curr: PSong;
+  ListItem: TListItem;
+  Min, Sec: Integer;
+begin
+  // Проверка на загрузку данных
+  if HeadSongs = nil then
+  begin
+    ShowMessage('В оперативной памяти нет данных! Сначала выполните загрузку.');
+    Exit;
+  end;
+
+  // Настройка формы просмотра под Песни
+  fView.Caption := 'Просмотр списка: Песни в альбомах';
+  fView.lvOutput.Items.Clear;
+  fView.lvOutput.Columns.Clear;
+
+  // Создание колонок для песен
+  with fView.lvOutput.Columns.Add do begin Caption := 'Название песни'; Width := 220; end;
+  with fView.lvOutput.Columns.Add do begin Caption := 'Код альбома'; Width := 90; end;
+  with fView.lvOutput.Columns.Add do begin Caption := 'Длительность'; Width := 100; end;
+
+  // Проход по динамическому списку песен в ОЗУ
+  Curr := HeadSongs;
+  while Curr <> nil do
+  begin
+    ListItem := fView.lvOutput.Items.Add;
+    ListItem.Caption := Curr^.Title;               // 1 колонка
+    ListItem.SubItems.Add(IntToStr(Curr^.AlbumCode)); // 2 колонка
+
+    // Перевод секунд в ММ:СС
+    Min := Curr^.Duration div 60;
+    Sec := Curr^.Duration mod 60;
+    ListItem.SubItems.Add(Format('%.2d:%.2d (%d сек)', [Min, Sec, Curr^.Duration])); // 3 колонка
+
+    Curr := Curr^.Next; // Переход к следующему элементу
+  end;
+
+  // Открытие окна просмотра
   fView.ShowModal;
 end;
 
