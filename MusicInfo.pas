@@ -9,12 +9,12 @@ uses
 type
 
   TForm1 = class(TForm)
-    Label1: TLabel;
+    lblLogo: TLabel;
     BtnLoad: TButton;
     BtnView: TButton;
     BtnSort: TButton;
     BtnSearch: TButton;
-    Button5: TButton;
+    BtnAdd: TButton;
     Button6: TButton;
     Button7: TButton;
     Button8: TButton;
@@ -26,6 +26,10 @@ type
     miArtists: TMenuItem;
     miAlbums: TMenuItem;
     miSongs: TMenuItem;
+    pmAdd: TPopupMenu;
+    miAddArtist: TMenuItem;
+    miAddAlbum: TMenuItem;
+    miAddSong: TMenuItem;
     procedure BtnLoadClick(Sender: TObject);
     procedure BtnViewClick(Sender: TObject);
     procedure miArtistsClick(Sender: TObject);
@@ -33,6 +37,8 @@ type
     procedure miSongsClick(Sender: TObject);
     procedure BtnSortClick(Sender: TObject);
     procedure BtnSearchClick(Sender: TObject);
+    procedure BtnAddClick(Sender: TObject);
+    procedure miAddArtistClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -49,6 +55,22 @@ implementation
 uses
   DataUnits, ViewForm;
   // Переменные хранения начала каждого списка
+
+procedure TForm1.BtnAddClick(Sender: TObject);
+var
+  ButtonPt: TPoint;
+begin
+  // Проверка данных на загрузку.
+  if HeadArtists = nil then
+  begin
+    ShowMessage('В оперативной памяти нет данных! Сначала выполните загрузку.');
+    Exit;
+  end;
+
+  // Отображение выпадающего меню под кнопкой
+  ButtonPt := BtnAdd.ClientToScreen(Point(0, BtnAdd.Height));
+  pmAdd.Popup(ButtonPt.X, ButtonPt.Y);
+end;
 
 procedure TForm1.BtnLoadClick(Sender: TObject);
 var
@@ -258,6 +280,53 @@ var
 begin
   ButtonPt := BtnView.ClientToScreen(Point(0, BtnView.Height));
   pmLists.Popup(ButtonPt.X, ButtonPt.Y);
+end;
+
+
+procedure TForm1.miAddArtistClick(Sender: TObject);
+var
+  NewArt, Curr: PArtist;
+  SCode, SName, SCountry, SGenre: string;
+  InputCode: Integer;
+begin
+  // Запрос данных у пользователя
+  SCode    := InputBox('Новый исполнитель', 'Введите числом уникальный код исполнителя:', '');
+  if Trim(SCode) = '' then Exit;
+
+  InputCode := StrToIntDef(SCode, -1);
+  if InputCode <= 0 then begin
+    ShowMessage('Ошибка! Код должен быть положительным числом.');
+    Exit;
+  end;
+  // Проверка на уникальность кода
+  if IsArtistCodeExists(InputCode) then begin
+    ShowMessage('Ошибка! Исполнитель с кодом ' + SCode + ' уже существует в системе.');
+    Exit;
+  end;
+
+  SName    := InputBox('Новый исполнитель', 'Введите название группы:', '');
+  SCountry := InputBox('Новый исполнитель', 'Введите страну:', '');
+  SGenre   := InputBox('Новый исполнитель', 'Введите музыкальный жанр:', '');
+
+  // Выделение памяти под новый динамический узел
+  New(NewArt);
+  NewArt^.ArtistCode := StrToIntDef(SCode, 0);
+  NewArt^.Name := SName;
+  NewArt^.Country := SCountry;
+  NewArt^.Genre := SGenre;
+  NewArt^.Next := nil; // Новый элемент указывает в nil
+
+  // Вставка узла в конец списка в ОЗУ
+  if HeadArtists = nil then HeadArtists := NewArt
+  else
+  begin
+    Curr := HeadArtists;
+    while Curr^.Next <> nil do
+      Curr := Curr^.Next; // Поиск последнего элемента списка
+    Curr^.Next := NewArt;  // Привязка нового к последнему
+  end;
+
+  ShowMessage('Исполнитель успешно добавлен в оперативную память!');
 end;
 
 // ПРОСМОТР АЛЬБОМОВ
